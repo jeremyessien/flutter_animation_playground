@@ -12,11 +12,13 @@ class AnimatedContainerExample extends StatefulWidget {
 
 class _AnimatedContainerExampleState extends State<AnimatedContainerExample> {
   double boxWidth = 100.0;
-
   double boxHeight = 100.0;
-
   BorderRadius boxRadius = BorderRadius.circular(8);
   Color boxColor = Colors.deepPurpleAccent;
+  bool isExpanded = false;
+  double boxRotation = 0.0;
+  Alignment boxAlignment = Alignment.center;
+  Curve boxCurve = Curves.fastOutSlowIn;
 
   void changeContainerSize() {
     setState(() {
@@ -42,6 +44,16 @@ class _AnimatedContainerExampleState extends State<AnimatedContainerExample> {
     });
   }
 
+  void changeTransformation() {
+    setState(() {
+      boxRotation = Random().nextInt(360).toDouble();
+      boxAlignment = Alignment(
+        Random().nextDouble() * 2 - 1,
+        Random().nextDouble() * 2 - 1,
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,14 +63,15 @@ class _AnimatedContainerExampleState extends State<AnimatedContainerExample> {
         children: [
           AnimatedContainer(
             duration: const Duration(seconds: 1),
-            curve: Curves.fastOutSlowIn,
+            curve: boxCurve,
             width: boxWidth,
             height: boxHeight,
             decoration: BoxDecoration(color: boxColor, borderRadius: boxRadius),
+            transform: Matrix4.rotationZ(boxRotation * 3.14159 / 180),
           ),
 
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          Wrap(
+            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               TextButton(
                 onPressed: changeContainerColor,
@@ -71,6 +84,11 @@ class _AnimatedContainerExampleState extends State<AnimatedContainerExample> {
               TextButton(
                 onPressed: changeContainerRadius,
                 child: Text('Change Radius'),
+              ),
+
+              TextButton(
+                onPressed: changeTransformation,
+                child: Text('Change Transformation'),
               ),
             ],
           ),
